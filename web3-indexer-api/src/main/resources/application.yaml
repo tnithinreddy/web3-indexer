@@ -1,0 +1,9 @@
+resilience4j:
+  retry:
+    instances:
+      BLOCK_TXN_PROCESSOR_RETRY_POLICY:
+        maxRetryAttempts: 3
+        waitDuration: 2s
+      SMART_CONTRACT_TXN_PROCESSOR_RETRY_POLICY:
+        maxRetryAttempts: 3
+        waitDuration: 2s
