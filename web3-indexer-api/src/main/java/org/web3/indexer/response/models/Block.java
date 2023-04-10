@@ -5,17 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+
 @Builder
 @AllArgsConstructor
 @Getter
-public class Transaction {
-    String txnHash;
-    String fromAddress;
-    String toAddress;
-    BigInteger txnValue;
-    BigInteger gas;
-    BigInteger gasPrice;
-    BigInteger timestamp;
-    String inputData;
+public class Block {
     String blockHash;
+    BigInteger timestamp;
+    int transactionsCount;
+    BigInteger blockNumber;
+    String status;
 }

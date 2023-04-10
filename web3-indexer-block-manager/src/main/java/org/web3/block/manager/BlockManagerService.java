@@ -10,11 +10,15 @@ import org.reactivestreams.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3.entities.BlockEntity;
+import org.web3.enums.BlockProcessingStatus;
 import org.web3.indexer.node.NodeInterface;
 import org.web3.repositories.BlockRepository;
 import org.web3.transaction.retriever.BlockTransactionProcessor;
 import org.web3j.protocol.core.methods.response.EthBlock;
 
+/*
+* Responsible for handling the book-keeping of blocks. If a block is fetched
+* */
 @Service
 @Log4j2
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -26,28 +30,16 @@ public class BlockManagerService {
 
     private final BlockTransactionProcessor blockTransactionProcessor;
 
-    @FunctionalInterface
-    public interface CheckedFunction<T, R> {
-        R apply(T t) throws IOException;
-    }
-
 
     public EthBlock getBlock(long blockNumber) throws IOException {
 
         EthBlock block =  nodeInterface.ethGetBlockByNumber(BigInteger.valueOf(blockNumber), false);
-//        List<EthBlock.TransactionObject> contractTransactions = getContractTransactions(block);
-//        log.info("contractTransactions {}", contractTransactions.size());
-//        Optional<TransactionReceipt> transReceipt = nodeInterface.ethGetTransactionReceipt("transactionHash");
-//        Transaction transaction = ethTransaction.getResult();
-//        int size = tokenImpl.getTransferEvents(transReceipt).size();
-//        size = size -1;
-//        BigInteger valueTransaction = tokenImpl.getTransferEvents(transReceipt).get(size).value;
         return block;
     }
 
 
     private void processBlock(EthBlock.Block block) {
-        blockRepository.save(buildBlockEntity(block));
+        blockRepository.save(buildBlockEntity(block, BlockProcessingStatus.PENDING));
         // ideally we will not be publishing this message from code as this will not be transactional.
         // We will consume create/update events from the cdc of blocks table and publish to a kafka topic
         // not integrating with kafka currently invoking the message in a fire and forget mode
@@ -61,9 +53,10 @@ public class BlockManagerService {
         });
     }
 
-    private BlockEntity buildBlockEntity(EthBlock.Block block) {
+    private BlockEntity buildBlockEntity(EthBlock.Block block, BlockProcessingStatus status) {
         return BlockEntity.builder()
                 .blockNumber(block.getNumber())
+                .status(status)
                 .transactionsCount(block.getTransactions().size())
                 .timestamp(block.getTimestamp())
                 .blockHash(block.getHash())

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigInteger;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
@@ -12,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+import org.web3.enums.BlockProcessingStatus;
 
 @Entity
 @AllArgsConstructor
@@ -34,5 +37,7 @@ public class BlockEntity extends BaseEntity {
     @Column(nullable = false)
     BigInteger blockNumber;
 
-
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    BlockProcessingStatus status;
 }

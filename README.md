@@ -1,4 +1,4 @@
-1. Why sub-modules over sub-packages in single module
+1. Why sub-modules over sub-packages in single module ?
 Idea is that each sub-module itself is a separate deployable system as per the HLD, so wanted to break things.
 2. web3-indexer-api module has the server which exposes APIs like get block, get transactions of a given address etc
 3. web3-indexer-blockchain-node-interface is created to abstract out the interactions with the node from our other modules. Also, the okhttp client is configured to ensure we retry atleast 3 times on every failure. back-off mechanisms are not yet added.
@@ -37,4 +37,4 @@ To fetch all transactions of a given address (includes from and to of the transa
 `curl --location 'localhost:8080/api/v1/address?address={address_here}'`
 
 To fetch a given block and inspect its JSON
-`curl --location 'localhost:8080/api/v1/block?blockNumber={block_number_here}'`
+`curl --location 'localhost:8080/api/v1/block?blockHash={block_hash_here}'`

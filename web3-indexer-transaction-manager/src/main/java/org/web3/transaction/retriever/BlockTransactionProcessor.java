@@ -19,6 +19,10 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthGetCode;
 
+
+/*
+* processes all transactions in a block, saves them in database. Publishes messages to parse contract transactions
+* */
 @Log4j2
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Service
@@ -84,6 +88,7 @@ public class BlockTransactionProcessor {
                 .map(txn -> (EthBlock.TransactionObject) txn.get()).collect(Collectors.toList());
     }
 
+    //processes all transactions in a block, saves them in database. Publishes messages to parse contract transactions
     @Retry(name = "BLOCK_TXN_PROCESSOR_RETRY_POLICY", fallbackMethod = "processBlockTransactionsFallback")
     private void processBlockTransactions(EthBlock.Block block) {
         try {

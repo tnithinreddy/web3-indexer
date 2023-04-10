@@ -10,5 +10,6 @@ CREATE TABLE blocks (
    timestamp DECIMAL NOT NULL,
    transactions_count INTEGER NOT NULL,
    block_number DECIMAL NOT NULL,
+   status VARCHAR(255) NOT NULL,
    CONSTRAINT pk_blocks PRIMARY KEY (block_hash)
 );
